@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../helpers/database_helper.dart';
-import '../models/task_item.dart';
+import 'package:task_notes_manager/helpers/database_helper.dart';
+import 'package:task_notes_manager/models/task_item.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
@@ -12,6 +12,7 @@ class AddTaskScreen extends StatefulWidget {
 class _AddTaskScreenState extends State<AddTaskScreen> {
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
+
   String _priority = "Low";
   bool _isCompleted = false;
 
@@ -20,7 +21,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text("Add New Task")),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             TextField(
@@ -46,8 +47,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
-                if (_titleController.text.isEmpty ||
-                    _descController.text.isEmpty) {
+                if (_titleController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Please enter a title")),
+                  );
                   return;
                 }
 
@@ -59,7 +62,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 );
 
                 await DatabaseHelper.instance.insertTask(task);
-                // ignore: use_build_context_synchronously
                 Navigator.pop(context);
               },
               child: const Text("Submit"),
