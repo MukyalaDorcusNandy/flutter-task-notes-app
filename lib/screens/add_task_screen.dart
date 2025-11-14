@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:task_notes_manager/helpers/database_helper.dart';
-import 'package:task_notes_manager/models/task_item.dart';
+import '../helpers/database_helper.dart';
+import '../models/task_item.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
@@ -12,27 +12,25 @@ class AddTaskScreen extends StatefulWidget {
 class _AddTaskScreenState extends State<AddTaskScreen> {
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
-
   String _priority = "Low";
   bool _isCompleted = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Add New Task")),
+      appBar: AppBar(title: const Text("Add New Task")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: _titleController,
-              decoration: InputDecoration(labelText: "Title"),
+              decoration: const InputDecoration(labelText: "Title"),
             ),
             TextField(
               controller: _descController,
-              decoration: InputDecoration(labelText: "Description"),
+              decoration: const InputDecoration(labelText: "Description"),
             ),
-
             DropdownButton<String>(
               value: _priority,
               items: ["Low", "Medium", "High"]
@@ -40,17 +38,19 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   .toList(),
               onChanged: (val) => setState(() => _priority = val!),
             ),
-
             SwitchListTile(
-              title: Text("Completed"),
+              title: const Text("Completed"),
               value: _isCompleted,
               onChanged: (val) => setState(() => _isCompleted = val),
             ),
-
-            SizedBox(height: 20),
-
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
+                if (_titleController.text.isEmpty ||
+                    _descController.text.isEmpty) {
+                  return;
+                }
+
                 final task = TaskItem(
                   title: _titleController.text,
                   priority: _priority,
@@ -62,8 +62,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 // ignore: use_build_context_synchronously
                 Navigator.pop(context);
               },
-              child: Text("Submit"),
-            )
+              child: const Text("Submit"),
+            ),
           ],
         ),
       ),

@@ -10,9 +10,10 @@ class TaskItem {
     required this.title,
     required this.priority,
     required this.description,
-    required this.isCompleted,
+    this.isCompleted = false,
   });
 
+  // Convert TaskItem to JSON for SQLite
   Map<String, dynamic> toJson() => {
         'id': id,
         'title': title,
@@ -21,6 +22,7 @@ class TaskItem {
         'isCompleted': isCompleted ? 1 : 0,
       };
 
+  // Convert JSON map from SQLite to TaskItem
   factory TaskItem.fromJson(Map<String, dynamic> json) => TaskItem(
         id: json['id'],
         title: json['title'],

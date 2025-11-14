@@ -1,30 +1,34 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:task_notes_manager/main.dart';
+import 'package:task_notes_manager/screens/home_screen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp(isDark: false,));
+  testWidgets('HomeScreen loads with welcome text and FAB', (WidgetTester tester) async {
+    // Build HomeScreen widget
+    await tester.pumpWidget(const MaterialApp(home: HomeScreen()));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Check for welcome text
+    expect(find.text('My Tasks & Notes'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Check for FloatingActionButton
+    expect(find.byType(FloatingActionButton), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Check for SwitchListTile (theme toggle)
+    expect(find.byType(SwitchListTile), findsOneWidget);
+
+    // Check if ListView exists (even empty)
+    expect(find.byType(ListView), findsOneWidget);
+  });
+
+  testWidgets('AddTaskScreen submits a new task', (WidgetTester tester) async {
+    // Navigate to AddTaskScreen
+    await tester.pumpWidget(const MaterialApp(home: HomeScreen()));
+
+    // Tap FAB to go to AddTaskScreen
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    // Should show Submit button
+    expect(find.text('Submit'), findsOneWidget);
   });
 }

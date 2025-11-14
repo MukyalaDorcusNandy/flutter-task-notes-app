@@ -2,47 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/home_screen.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  final prefs = await SharedPreferences.getInstance();
-  final isDark = prefs.getBool('isDarkTheme') ?? false;
-
-  runApp(MyApp(isDark: isDark));
+void main() {
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  final bool isDark;
-  const MyApp({super.key, required this.isDark});
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  late bool themeIsDark;
+  bool isDark = false;
 
   @override
   void initState() {
     super.initState();
-    themeIsDark = widget.isDark;
+    _loadTheme();
   }
 
-  void updateTheme(bool value) async {
+  Future<void> _loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isDarkTheme', value);
+    setState(() {
+      isDark = prefs.getBool('isDark') ?? false;
+    });
+  }
 
-    setState(() => themeIsDark = value);
+  Future<void> _toggleTheme(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDark', value);
+    setState(() => isDark = value);
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: themeIsDark ? ThemeData.dark() : ThemeData.light(),
+      title: 'Task Notes Manager',
+      theme: isDark ? ThemeData.dark() : ThemeData.light(),
       home: HomeScreen(
-        isDark: themeIsDark,
-        onThemeChange: updateTheme,
+        isDark: isDark,
+        onThemeChange: _toggleTheme,
       ),
     );
   }
